@@ -1,4 +1,4 @@
-import { initAuth } from "./auth";
+import { initAuth, isAdmin } from "./auth";
 import { initSession } from "./session";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -24,8 +24,8 @@ export function start() {
   initAuth(server);
 
   server.use(ssoRoutes());
-  server.use(userRoutes());
   server.use(oauth2Routes());
+  server.use(isAdmin(), userRoutes());
 
   server.listen(port, () => {
     console.info(`listening on http://${domain}:${port}`);

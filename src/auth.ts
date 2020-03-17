@@ -13,6 +13,16 @@ export const ensureLoggedIn = () => (req, res, next) => {
   }
 };
 
+export const isAdmin = () => (req, res, next) => {
+  const user: any = req.user;
+
+  if (req.isAuthenticated() && !user.isAdmin) {
+    return res.status(401).send();
+  }
+
+  return next();
+};
+
 export const signOutIfUserDisabled = () => async (req, res, next) => {
   const user: any = req.user;
 
@@ -45,7 +55,6 @@ export const initAuth = server => {
           const user: any = await User.findOne({
             _id: authorizationCode.userId
           });
-          console.log(user);
           return cb(null, user);
         }
       }
@@ -82,7 +91,6 @@ export const initAuth = server => {
     User.findOne({
       _id: id
     }).then((user: any) => {
-      console.log(user);
       done(null, user);
     });
   });
